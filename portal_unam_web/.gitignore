@@ -1,0 +1,11 @@
+/vendor/
+.env
+/writable/cache/*
+/writable/debugbar/*
+/writable/logs/*
+/writable/session/*
+/writable/tmp/*
+!writable/**/.gitkeep
+*.log
+.DS_Store
+Thumbs.db
