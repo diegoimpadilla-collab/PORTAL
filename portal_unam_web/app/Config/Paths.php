@@ -5,28 +5,23 @@ namespace Config;
 class Paths
 {
     /**
-     * Ruta al directorio 'app' de la aplicación.
+     * Path to the application directory.
      */
-    public string $appDirectory = __DIR__ . '/..';
+    public string $appDirectory = FCPATH . '../app';
 
     /**
-     * Ruta al directorio 'system' de CodeIgniter.
-     * Cuando instalas via Composer queda en vendor/codeigniter4/framework/system
+     * Path to the system directory.
+     * CI4.5+ via Composer: vendor/codeigniter4/framework/system
      */
-    public string $systemDirectory = __DIR__ . '/../../vendor/codeigniter4/framework/system';
+    public string $systemDirectory = FCPATH . '../vendor/codeigniter4/framework/system';
 
     /**
-     * Ruta al directorio 'writable'.
+     * Path to the writable directory.
      */
-    public string $writableDirectory = __DIR__ . '/../../writable';
+    public string $writableDirectory = FCPATH . '../writable';
 
     /**
-     * Ruta a los tests.
+     * Path to the tests directory.
      */
-    public string $testsDirectory = __DIR__ . '/../../tests';
-
-    /**
-     * Nombre del archivo de rutas de la vista.
-     */
-    public array $viewDirectory = [];
+    public string $testsDirectory = FCPATH . '../tests';
 }
