@@ -1,148 +1,156 @@
 # Portal de Egresados – UNAM Moquegua
-## Guía de Instalación en XAMPP
+
+## Requisitos
+- XAMPP (PHP 8.1+, MySQL, Apache)
+- Composer instalado globalmente
+- Cuenta en ngrok.com (gratis)
 
 ---
 
-## ESTRUCTURA DE ARCHIVOS GENERADOS
+## INSTALACIÓN COMPLETA (pasos exactos)
 
-Todos los archivos van dentro del framework CodeIgniter 4 que descargaste:
+### Paso 1 – Clonar el repositorio
+```bash
+cd C:\xampp\htdocs
+git clone https://github.com/diegoimpadilla-collab/PORTAL.git
+```
+Quedará en: `C:\xampp\htdocs\PORTAL\portal_unam_web\`
+
+### Paso 2 – Instalar dependencias con Composer
+```bash
+cd C:\xampp\htdocs\PORTAL\portal_unam_web
+composer install
+```
+Esto descarga CodeIgniter 4 completo en la carpeta `vendor/`.
+
+### Paso 3 – Crear base de datos
+1. Abre `http://localhost/phpmyadmin`
+2. Crea BD: `portal_egresados_unam`
+3. Importa el archivo `portal_egresados_unam.sql`
+
+### Paso 4 – Configurar .env
+```bash
+copy .env.example .env
+```
+Edita `.env`:
+```
+CI_ENVIRONMENT = development
+app.baseURL = 'http://localhost/PORTAL/portal_unam_web/public/'
+database.default.password = 
+```
+
+### Paso 5 – Verificar en local
+Abre: `http://localhost/PORTAL/portal_unam_web/public/`
+
+---
+
+## PUBLICAR CON NGROK
+
+### Paso 1 – Instalar ngrok
+Descarga desde https://ngrok.com/download e instálalo.
+
+### Paso 2 – Autenticarse (solo primera vez)
+```bash
+ngrok config add-authtoken TU_TOKEN_AQUI
+```
+
+### Paso 3 – Exponer el puerto de Apache (80)
+```bash
+ngrok http 80
+```
+
+### Paso 4 – Actualizar baseURL en .env
+Ngrok te da una URL como `https://abc123.ngrok-free.app`
+
+Edita `.env`:
+```
+app.baseURL = 'https://abc123.ngrok-free.app/PORTAL/portal_unam_web/public/'
+```
+
+### Paso 5 – Reiniciar Apache desde XAMPP
+Detén y vuelve a iniciar Apache en el Panel de XAMPP.
+
+### Paso 6 – Compartir la URL ngrok
+La URL pública será:
+```
+https://abc123.ngrok-free.app/PORTAL/portal_unam_web/public/
+```
+
+---
+
+## SOLUCIÓN DE ERRORES COMUNES
+
+### ❌ "vendor does not exist"
+```bash
+composer install
+```
+
+### ❌ Error 404 en rutas
+- Verifica que `mod_rewrite` esté activo en Apache
+- El `.htaccess` en `public/` debe existir
+
+### ❌ "The action you requested is not allowed" (ngrok)
+Edita `.env`:
+```
+app.baseURL = 'https://TU-URL.ngrok-free.app/PORTAL/portal_unam_web/public/'
+```
+
+### ❌ Error de base de datos
+Verifica en `.env`:
+```
+database.default.hostname = localhost
+database.default.username = root
+database.default.password = 
+database.default.database = portal_egresados_unam
+```
+
+### ❌ CSS/JS no cargan via ngrok
+El `app.baseURL` debe terminar en `/public/` con la URL de ngrok correcta.
+
+### ❌ Página en blanco
+Cambia en `.env`:
+```
+CI_ENVIRONMENT = development
+```
+Esto mostrará los errores reales.
+
+---
+
+## ESTRUCTURA DEL PROYECTO
 
 ```
-C:\xampp\htdocs\portal_unam\PORTAL WEB\
-│
-├── .env                          ← Crear desde .env.example
+portal_unam_web/
+├── .env                    ← Crea desde .env.example
+├── .env.example            ← Plantilla de configuración
+├── .htaccess               ← Redirige a public/
+├── composer.json           ← Dependencias (CI4)
+├── vendor/                 ← Generado por composer install
+├── writable/               ← Cache, logs, sessions
 ├── app/
 │   ├── Config/
-│   │   ├── Database.php          ← Configuración BD
-│   │   └── Routes.php            ← Rutas del sistema
-│   │
+│   │   ├── App.php         ← baseURL, configuración app
+│   │   ├── Database.php    ← Credenciales BD
+│   │   ├── Filters.php     ← Filtros (CSRF desactivado)
+│   │   ├── Paths.php       ← Rutas del framework
+│   │   └── Routes.php      ← Rutas URL
 │   ├── Controllers/
-│   │   ├── DashboardController.php
-│   │   ├── EgresadosController.php
-│   │   ├── EmpleadoresController.php
-│   │   └── OfertasController.php
-│   │
 │   ├── Models/
-│   │   ├── EgresadoModel.php
-│   │   ├── EscuelaModel.php
-│   │   ├── EmpleadorModel.php
-│   │   └── OfertaModel.php
-│   │
 │   └── Views/
-│       ├── layouts/
-│       │   └── main.php          ← Layout HTML principal
-│       ├── dashboard/
-│       │   └── index.php         ← KPIs y gráficos
-│       ├── egresados/
-│       │   ├── index.php         ← Listado + filtros
-│       │   └── detalle.php
-│       ├── empleadores/
-│       │   ├── index.php
-│       │   └── detalle.php
-│       ├── ofertas/
-│       │   ├── index.php
-│       │   └── detalle.php
-│       └── errors/
-│           └── not_found.php
-│
 └── public/
-    ├── .htaccess                 ← Ya existe en CodeIgniter
-    ├── index.php                 ← Ya existe en CodeIgniter
+    ├── .htaccess           ← Reescritura de URLs
+    ├── index.php           ← Front controller CI4
     ├── css/
-    │   └── portal.css            ← Estilos del portal
-    └── js/
-        └── portal.js             ← Lógica + Chart.js
+    ├── js/
+    └── img/
 ```
 
 ---
 
-## PASOS DE INSTALACIÓN
+## Módulos
 
-### Paso 1 – Preparar carpeta base
-1. Descomprime `codeigniter4-framework-v4.7.2` en:
-   `C:\xampp\htdocs\portal_unam\PORTAL WEB\`
-
-### Paso 2 – Crear la base de datos
-1. Abre tu navegador → `http://localhost/phpmyadmin`
-2. Clic en "Nueva" → escribe `portal_egresados_unam` → Crear
-3. Selecciona la BD → pestaña "Importar"
-4. Sube el archivo `portal_egresados_unam.sql`
-5. Clic en "Continuar"
-
-### Paso 3 – Pegar los archivos del portal
-Pega cada archivo en su ruta exacta dentro de:
-`C:\xampp\htdocs\portal_unam\PORTAL WEB\`
-
-> ⚠️ Los archivos de Config/ **REEMPLAZAN** a los originales de CodeIgniter.
-
-### Paso 4 – Configurar el archivo .env
-1. Copia `.env.example` y renómbralo `.env` (sin extensión)
-2. Verifica que la baseURL sea correcta:
-   ```
-   app.baseURL = 'http://localhost/portal_unam/PORTAL WEB/public/'
-   ```
-3. Si tu MySQL tiene contraseña, agrégala en:
-   ```
-   database.default.password = TU_CONTRASEÑA
-   ```
-
-### Paso 5 – Verificar mod_rewrite en XAMPP
-1. Abre `C:\xampp\apache\conf\httpd.conf`
-2. Busca esta línea y quita el `#` si lo tiene:
-   ```
-   LoadModule rewrite_module modules/mod_rewrite.so
-   ```
-3. Reinicia Apache desde el panel de XAMPP
-
-### Paso 6 – Acceder al portal
-Abre tu navegador en:
-```
-http://localhost/portal_unam/PORTAL WEB/public/
-```
-
----
-
-## MÓDULOS DEL PORTAL
-
-| Módulo          | URL                        | Descripción                         |
-|-----------------|----------------------------|-------------------------------------|
-| Dashboard       | /                          | KPIs + 5 gráficos interactivos      |
-| Egresados       | /egresados                 | Directorio con filtros y paginación |
-| Empleadores     | /empleadores               | Cards de empresas aliadas           |
-| Bolsa de Trabajo| /ofertas                   | Ofertas laborales activas           |
-
-### API de KPIs (para los gráficos)
-| Endpoint                     | Datos                              |
-|------------------------------|------------------------------------|
-| /api/kpis/resumen            | Totales: egresados/bach/tit/ofertas|
-| /api/kpis/por-escuela        | Desglose por escuela               |
-| /api/kpis/por-anio           | Evolución anual                    |
-| /api/kpis/por-sede           | Moquegua vs Ilo                    |
-| /api/kpis/por-sexo           | Masculino vs Femenino              |
-| /api/kpis/titulados-escuela  | Titulados/bachilleres por escuela  |
-
----
-
-## NOTAS TÉCNICAS
-
-- **Framework**: CodeIgniter 4.7.2
-- **BD**: MySQL / MariaDB (XAMPP)
-- **Gráficos**: Chart.js 4.4 (CDN, sin instalación)
-- **Fuentes**: Google Fonts (Sora + DM Mono)
-- **PHP mínimo**: 7.4 (XAMPP incluye 8.x)
-
----
-
-## PROBLEMAS COMUNES
-
-**Error 404 en rutas**
-→ Verifica que `mod_rewrite` esté activo y que `.htaccess` en `public/` exista.
-
-**Error de conexión a BD**
-→ Revisa usuario/contraseña en `app/Config/Database.php` y en `.env`.
-
-**Página en blanco**
-→ Cambia `CI_ENVIRONMENT = development` en `.env` para ver errores.
-
-**CSS/JS no cargan**
-→ Revisa que `app.baseURL` en `.env` tenga la URL correcta con `/public/`.
+| Módulo | URL | Descripción |
+|--------|-----|-------------|
+| Dashboard | `/` | KPIs + 5 gráficos |
+| Egresados | `/egresados` | Directorio con filtros |
+| Empleadores | `/empleadores` | Empresas aliadas |
+| Bolsa de Trabajo | `/ofertas` | Ofertas laborales |
