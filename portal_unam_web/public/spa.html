@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Portal Egresados - SPA</title>
+  <link rel="stylesheet" href="/portal_unam_web/public/css/portal.css">
+  <link rel="stylesheet" href="/portal_unam_web/public/css/spa.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div id="app">
+    <header class="spa-topbar">
+      <div class="spa-brand">UNAM · Portal Egresados</div>
+      <nav class="spa-nav">
+        <a href="#inicio" data-link>Inicio</a>
+        <a href="#estadisticas" data-link>Estadísticas</a>
+        <a href="#empresas" data-link>Empresas</a>
+        <a href="#bolsa" data-link>Bolsa de Trabajo</a>
+        <button id="loginBtn">Empresa / Login</button>
+         <button id="registerBtn">Registrar Empresa</button>
+         <button id="seedBtn" title="Sembrar datos demo">Sembrar demo</button>
+      </nav>
+    </header>
+
+    <main class="spa-main">
+      <section id="inicio" class="spa-section active">
+        <div class="inicio-hero">
+          <h1>Conecta egresados y empresas con datos reales de la UNAM Moquegua.</h1>
+          <p>Estadísticas y bolsa de trabajo con un portal moderno y limpio.</p>
+          <div class="big-numbers">
+            <div class="kpi" id="kpi-egresados"><strong>—</strong><span>EGRESADOS</span></div>
+            <div class="kpi" id="kpi-bach"><strong>—</strong><span>BACHILLERES</span></div>
+            <div class="kpi" id="kpi-tit"><strong>—</strong><span>TITULADOS</span></div>
+            <div class="kpi" id="kpi-ofertas"><strong>—</strong><span>VACANTES</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="estadisticas" class="spa-section">
+        <h2>Estadísticas</h2>
+        <div class="kpi-row">
+          <div class="kpi" id="kpi-egresados"><strong>—</strong><span>Total Egresados</span></div>
+          <div class="kpi" id="kpi-bach"><strong>—</strong><span>Bachilleres</span></div>
+          <div class="kpi" id="kpi-tit"><strong>—</strong><span>Titulados</span></div>
+          <div class="kpi" id="kpi-ofertas"><strong>—</strong><span>Ofertas</span></div>
+        </div>
+        <div class="charts">
+          <div class="chart-card"><canvas id="chartEscuela"></canvas></div>
+          <div class="chart-card"><canvas id="chartAnio"></canvas></div>
+        </div>
+      </section>
+
+      <section id="empresas" class="spa-section">
+        <h2>Empresas</h2>
+        <div id="empresas-list" class="cards-grid"></div>
+      </section>
+
+      <section id="bolsa" class="spa-section">
+        <h2>Bolsa de Trabajo</h2>
+        <div id="ofertas-list" class="cards-grid"></div>
+        <div id="oferta-form" style="display:none">
+          <h3>Publicar oferta</h3>
+          <form id="postOferta">
+            <input name="titulo" placeholder="Título" required>
+            <input name="ubicacion" placeholder="Ubicación" required>
+            <input name="salario_min" placeholder="Salario mínimo">
+            <input name="salario_max" placeholder="Salario máximo">
+            <select name="modalidad">
+              <option value="">Seleccionar modalidad</option>
+              <option>Remoto</option>
+              <option>Presencial</option>
+              <option>Híbrido</option>
+            </select>
+            <textarea name="descripcion" placeholder="Descripción"></textarea>
+            <button type="submit">Publicar</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <div id="loginModal" class="modal" style="display:none">
+      <div class="modal-body">
+        <h3>Login Empresa</h3>
+            <div id="registerModal" class="modal" style="display:none">
+              <div class="modal-body">
+                <h3>Registrar acceso Empresa</h3>
+                <p>Selecciona la empresa y define una contraseña.</p>
+                <select id="registerEmpresaSelect"></select>
+                <input id="registerPassword" type="password" placeholder="Contraseña" style="width:100%;margin-top:8px;padding:8px" />
+                <div style="margin-top:12px;display:flex;gap:8px">
+                  <button id="registerSubmit">Registrar</button>
+                  <button id="registerClose">Cerrar</button>
+                </div>
+              </div>
+            </div>
+        <p>Selecciona la empresa y tu contraseña.</p>
+        <select id="empresaSelect"></select>
+        <input id="empresaPassword" type="password" placeholder="Contraseña" style="width:100%;margin-top:8px;padding:8px" />
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <button id="empresaLogin">Iniciar sesión</button>
+          <button id="empresaClose">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/portal_unam_web/public/js/spa.js"></script>
+</body>
+</html>
